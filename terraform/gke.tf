@@ -1,9 +1,3 @@
-provider "google" {
-  credentials = file("/Users/Alban/Werk/HelloWeb3/traffic-386513-0f741ebb862c.json")
-  project     = "dotted-lens-412717"
-  region      = "southamerica-east1"
-}
-
 resource "google_container_cluster" "helloweb3" {
   name     = "helloweb3"
   location = "southamerica-east1"

@@ -1,5 +1,6 @@
 locals {
   project_id = "dotted-lens-412717"
+  credentials = file("/Users/Alban/Werk/HelloWeb3/traffic-386513-0f741ebb862c.json")
   region     = "southamerica-east1"
   default_labels = {
     managed-by = "terraform"
