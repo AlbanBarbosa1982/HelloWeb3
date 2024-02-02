@@ -33,7 +33,3 @@ provider "google-beta" {
   project = local.project_id
   region  = local.region
 }
-
-data "google_project" "this" {}
-
-data "google_compute_default_service_account" "default" {}
