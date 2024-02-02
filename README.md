@@ -18,11 +18,10 @@ This challenge involves deploying a Node.js application that monitors the Polygo
 ## Task Details
 
 ### 1. GCP Project Setup
-- Create a new project on GCP.
-- Claim the $300 free credits.
+
 
 ### 2. Terraform Setup for GKE
-- Use existing Terraform modules or create a minimal setup for provisioning a VPC and GKE cluster.
+- Use existing Terraform modules or create a minimal setup for provisioning a VPC and GKE cluster.  !!!!!!
 - Optionally, set up an IAM role for a read-only Kubernetes user.
 
 ### 3. Node.js Application Setup
