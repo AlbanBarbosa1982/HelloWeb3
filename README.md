@@ -59,4 +59,4 @@ This challenge involves deploying a Node.js application that monitors the Polygo
 - Provide clear documentation in the repository.
 - Submit the repository URL upon completion.
 
-More tomorrow!
+More tomorrow.
