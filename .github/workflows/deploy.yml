@@ -25,10 +25,14 @@ jobs:
       - name: Terraform Init
         run: terraform init
         working-directory: ./terraform
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./terraform
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
   build:
     needs: setup-infrastructure
@@ -40,12 +44,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
 
-      - name: Setup Google Cloud credentials (Docker)
-        uses: google-github-actions/setup-gcloud@v0.3.0
-        with:
-          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          project_id: ${{ secrets.GCP_PROJECT }}
-
+      # No need to set up Google Cloud credentials again for Docker if already authenticated
       - name: Configure Docker for GCR
         run: gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
 
@@ -59,12 +58,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Google Cloud credentials (GKE)
-        uses: google-github-actions/setup-gcloud@v0.3.0
-        with:
-          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          project_id: ${{ secrets.GCP_PROJECT }}
-
+      # No need to set up Google Cloud credentials again for GKE if already authenticated
       - name: Get GKE credentials
         run: gcloud container clusters get-credentials helloweb3 --region southamerica-east1 --project ${{ secrets.GCP_PROJECT }}
 
