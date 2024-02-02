@@ -24,21 +24,14 @@ terraform {
   }
 }
 
-variable "credentials_file" {
-  description = "Path to the Google Cloud credentials file"
-  type        = string
-}
-
 provider "google" {
-  credentials = file(var.credentials_file)
-  project     = local.project_id
-  region      = local.region
+  project = local.project_id
+  region  = local.region
 }
 
 provider "google-beta" {
-  credentials = file(var.credentials_file)
-  project     = local.project_id
-  region      = local.region
+  project = local.project_id
+  region  = local.region
 }
 
 data "google_project" "this" {}

@@ -43,7 +43,7 @@ jobs:
         run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
 
       - name: Configure Docker for GCR
-        run: gcloud auth configure-docker
+        run: gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
 
       - name: Push Docker image to GCR
         run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD)
