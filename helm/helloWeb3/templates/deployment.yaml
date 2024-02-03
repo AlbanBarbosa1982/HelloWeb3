@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: {{ include "helloWeb3.fullname" . }}
   labels:
-    {{- include "helloWeb3.labels" . | nindent 4 }}
+  {{ include "helloWeb3.labels" . | nindent 4 }}:
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "helloWeb3.selectorLabels" . | nindent 6 }}
+      {{- include "helloWeb3.selectorLabels" . | nindent 8 }}
   template:
     metadata:
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- toYaml .Values.podAnnotations | nindent 10 }}
       labels:
         {{- include "helloWeb3.selectorLabels" . | nindent 8 }}
     spec:
