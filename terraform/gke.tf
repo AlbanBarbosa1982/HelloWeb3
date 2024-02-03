@@ -14,6 +14,9 @@ resource "google_container_cluster" "helloweb3" {
       issue_client_certificate = true
     }
   }
+  
+  network    = "projects/${local.project_id}/global/networks/bcwresearch-network" # Replace with your network's self-link
+  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork" # Replace with your subnetwork's self-link
 }
 
 resource "google_container_node_pool" "app_pool" {
@@ -35,4 +38,9 @@ resource "google_container_node_pool" "app_pool" {
       "https://www.googleapis.com/auth/monitoring",
     ]
   }
+}
+
+locals {
+  project_id = "dotted-lens-412717" # Replace with your project ID
+  region     = "europe-west1"
 }
