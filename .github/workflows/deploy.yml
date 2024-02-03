@@ -47,13 +47,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup Google Cloud credentials (Again for Docker Push)
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
       - name: Configure Docker and Build Image
         run: |
           docker build -t eu.gcr.io/${{ secrets.GCP_PROJECT }}/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
           gcloud auth configure-docker eu.gcr.io --quiet
 
-      - name: Test GCP Authentication
+      - name: Print GCP Auth Info
         run: |
+          echo "Verifying GCP authentication..."
           gcloud auth list
           gcloud projects list
 
