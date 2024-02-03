@@ -20,4 +20,8 @@ resource "google_compute_subnetwork" "subnetwork" {
     range_name    = "kubernetes-secondaryrange2"
     ip_cidr_range = "10.2.0.0/20"
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
