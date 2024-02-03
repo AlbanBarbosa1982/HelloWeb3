@@ -1,4 +1,4 @@
-name: Build and Deploy to GKE with Helm
+name: Build, Push and Deploy to GKE
 
 on:
   push:
@@ -6,42 +6,41 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Setup Google Cloud credentials
-        uses: google-github-actions/auth@v0.4.0
-        with:
-          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-          
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
-      
-      - name: Build Docker Image
-        run: docker build -t europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:${{ github.sha }} .
-      
-      - name: Push Docker Image to Artifact Registry
-        run: docker push europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:${{ github.sha }}
-      
+
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.1
         with:
           project_id: dotted-lens-412717
           service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           export_default_credentials: true
-      
+
+      - name: Install gcloud beta components and gke-gcloud-auth-plugin
+        run: |
+          gcloud components install beta gke-gcloud-auth-plugin --quiet
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
+
+      - name: Build Docker Image
+        run: docker build -t europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:${{ github.sha }} .
+
+      - name: Push Docker Image to Artifact Registry
+        run: docker push europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:${{ github.sha }}
+
       - name: Get GKE credentials
         run: gcloud container clusters get-credentials kubernetes-cluster --zone europe-west1-d --project dotted-lens-412717
-      
+
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
           version: '3.5.2'
-      
-      - name: Deploy to GKE using Helm
+
+      - name: Helm Upgrade and Install Release
         run: |
           helm upgrade --install helloweb3 ./helm/helloweb3 --namespace default \
             --set image.repository=europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 \
