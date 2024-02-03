@@ -58,5 +58,3 @@ This challenge involves deploying a Node.js application that monitors the Polygo
 - Ensure all deliverables are committed to your repository.
 - Provide clear documentation in the repository.
 - Submit the repository URL upon completion.
-
-IAM game of roles.
