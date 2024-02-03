@@ -10,9 +10,6 @@ resource "google_container_cluster" "helloweb3" {
       issue_client_certificate = true
     }
   }
-  
-  network    = "projects/${local.project_id}/global/networks/bcwresearch-network"
-  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork"
 }
 
 resource "google_container_node_pool" "app_pool" {
