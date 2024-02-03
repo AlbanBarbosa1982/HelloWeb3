@@ -1,10 +1,6 @@
-terraform {
-  required_version = "~> 1.5"
-}
-
 resource "google_container_cluster" "helloweb3" {
   name     = "helloweb3"
-  location = local.zone  
+  location = local.zone
 
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -15,13 +11,13 @@ resource "google_container_cluster" "helloweb3" {
     }
   }
   
-  network    = "projects/${local.project_id}/global/networks/bcwresearch-network" 
-  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork" 
+  network    = "projects/${local.project_id}/global/networks/bcwresearch-network"
+  subnetwork = "projects/${local.project_id}/regions/${local.zone}/subnetworks/bcwresearch-subnetwork"
 }
 
 resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
-  location   = local.zone  # Change from region to zone
+  location   = local.zone
   cluster    = google_container_cluster.helloweb3.name
   node_count = 1
 
