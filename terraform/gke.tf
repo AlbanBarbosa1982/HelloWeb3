@@ -4,7 +4,7 @@ terraform {
 
 resource "google_container_cluster" "helloweb3" {
   name     = "helloweb3"
-  location = local.region
+  location = local.zone  
 
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -15,13 +15,13 @@ resource "google_container_cluster" "helloweb3" {
     }
   }
   
-  network    = "projects/${local.project_id}/global/networks/bcwresearch-network" # Replace with your network's self-link
-  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork" # Replace with your subnetwork's self-link
+  network    = "projects/${local.project_id}/global/networks/bcwresearch-network" 
+  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork" 
 }
 
 resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
-  location   = local.region
+  location   = local.zone  # Change from region to zone
   cluster    = google_container_cluster.helloweb3.name
   node_count = 1
 
