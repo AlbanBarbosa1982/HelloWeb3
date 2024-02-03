@@ -1,7 +1,7 @@
 resource "google_compute_network" "network" {
   name                    = "bcwresearch-network"
   routing_mode            = "REGIONAL"
-  auto_create_subnetworks = true  # Set to true to allow automatic subnetwork creation
+  auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "subnetwork" {
