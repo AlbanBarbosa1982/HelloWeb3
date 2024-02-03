@@ -1,5 +1,5 @@
 locals {
-  project_id = "traffic-386513"
+  project_id = "dotted-lens-412717"
   region     = "europe-west1"
   default_labels = {
     managed-by = "terraform"
