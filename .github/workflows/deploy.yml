@@ -52,5 +52,10 @@ jobs:
           docker build -t eu.gcr.io/${{ secrets.GCP_PROJECT }}/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
           gcloud auth configure-docker eu.gcr.io --quiet
 
+      - name: Test GCP Authentication
+        run: |
+          gcloud auth list
+          gcloud projects list
+
       - name: Push Docker Image to GCR
         run: docker push eu.gcr.io/${{ secrets.GCP_PROJECT }}/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7)
