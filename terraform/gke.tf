@@ -39,8 +39,3 @@ resource "google_container_node_pool" "app_pool" {
     ]
   }
 }
-
-locals {
-  project_id = "dotted-lens-412717" # Replace with your project ID
-  region     = "europe-west1"
-}
