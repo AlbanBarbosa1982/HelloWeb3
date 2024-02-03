@@ -54,14 +54,8 @@ jobs:
 
       - name: Configure Docker and Build Image
         run: |
-          docker build -t eu.gcr.io/${{ secrets.GCP_PROJECT }}/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
-          gcloud auth configure-docker eu.gcr.io --quiet
+          docker build -t europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
+          gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
 
-      - name: Print GCP Auth Info
-        run: |
-          echo "Verifying GCP authentication..."
-          gcloud auth list
-          gcloud projects list
-
-      - name: Push Docker Image to GCR
-        run: docker push eu.gcr.io/${{ secrets.GCP_PROJECT }}/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7)
+      - name: Push Docker Image to GAR
+        run: docker push europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7)
