@@ -1,6 +1,6 @@
 resource "google_container_cluster" "helloweb3" {
   name     = "helloweb3"
-  location = local.zone
+  location = local.region
 
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -12,12 +12,12 @@ resource "google_container_cluster" "helloweb3" {
   }
   
   network    = "projects/${local.project_id}/global/networks/bcwresearch-network"
-  subnetwork = "projects/${local.project_id}/regions/${local.zone}/subnetworks/bcwresearch-subnetwork"
+  subnetwork = "projects/${local.project_id}/regions/${local.region}/subnetworks/bcwresearch-subnetwork"
 }
 
 resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
-  location   = local.zone
+  location   = local.region
   cluster    = google_container_cluster.helloweb3.name
   node_count = 1
 
