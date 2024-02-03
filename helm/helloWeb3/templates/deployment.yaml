@@ -31,11 +31,15 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
+              initialDelaySeconds: 10
+              periodSeconds: 5
           readinessProbe:
             httpGet:
-              path: /health
+              path: /
               port: http
+              initialDelaySeconds: 5
+              periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
