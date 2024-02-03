@@ -42,6 +42,6 @@ jobs:
 
       - name: Helm Upgrade and Install Release
         run: |
-          helm upgrade --install helloweb3 ./helm/helloWeb3 --namespace default \
+          helm upgrade --install helloWeb3 ./helm/helloWeb3 --namespace default \
             --set image.repository=europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 \
             --set image.tag=${{ github.sha }}
