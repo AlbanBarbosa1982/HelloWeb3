@@ -3,43 +3,59 @@ kind: Deployment
 metadata:
   name: {{ include "helloWeb3.fullname" . }}
   labels:
-  {{ include "helloWeb3.labels" . | nindent 4 }}:
+{{ include "helloWeb3.labels" . | nindent 4 }}
 spec:
+{{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
+{{- end }}
   selector:
     matchLabels:
-      {{- include "helloWeb3.selectorLabels" . | nindent 8 }}
+{{- include "helloWeb3.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+{{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 10 }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
       labels:
-        {{- include "helloWeb3.selectorLabels" . | nindent 8 }}
+{{- include "helloWeb3.selectorLabels" . | nindent 8 }}
     spec:
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{- toYaml . | nindent 8 }}
+{{- end }}
       serviceAccountName: {{ include "helloWeb3.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+{{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: helloweb3
+        - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+{{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 3000
+              containerPort: 3000 
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
               port: http
-              initialDelaySeconds: 10
-              periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: http
-              initialDelaySeconds: 5
-              periodSeconds: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{- toYaml .Values.resources | nindent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{- toYaml . | nindent 8 }}
+{{- end }}
