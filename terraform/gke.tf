@@ -28,7 +28,7 @@ resource "google_container_node_pool" "app_pool" {
   node_config {
     preemptible  = false
     machine_type = "n1-standard-1"
-    disk_size_gb = 100
+    disk_size_gb = 66
     disk_type    = "pd-standard"
 
     oauth_scopes = [
