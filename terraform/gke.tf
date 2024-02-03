@@ -23,12 +23,12 @@ resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
   location   = local.region
   cluster    = google_container_cluster.helloweb3.name
-  node_count = 3
+  node_count = 2
 
   node_config {
     preemptible  = false
     machine_type = "n1-standard-1"
-    disk_size_gb = 66
+    disk_size_gb = 100
     disk_type    = "pd-standard"
 
     oauth_scopes = [
