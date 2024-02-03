@@ -49,13 +49,8 @@ jobs:
 
       - name: Configure Docker and Build Image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
           gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
 
       - name: Push Docker Image to GCR
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD)
-
-      - name: Deploy to GKE
-        run: |
-          gcloud container clusters get-credentials helloweb3 --region europe-west1 --project ${{ secrets.GCP_PROJECT }}
-          helm upgrade --install helloweb3 ./helm/helloweb3 --set image=gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD)
+        run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse HEAD | cut -c1-7)
