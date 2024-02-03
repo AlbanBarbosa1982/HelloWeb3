@@ -1,15 +1,22 @@
-name: 'Build, Deploy to GCP with Terraform'
+name: Build and Deploy to GKE with Terraform and Helm
 
 on:
   push:
     branches:
       - main
 
+env:
+  PROJECT_ID: dotted-lens-412717
+  GKE_CLUSTER_NAME: kubernetes-cluster
+  GKE_ZONE: europe-west1-d
+  IMAGE: helloweb3
+  REGISTRY: europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/${{ env.IMAGE }}
+
 jobs:
-  setup-infrastructure:
+  setup-gke:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Setup Google Cloud credentials
@@ -17,45 +24,32 @@ jobs:
         with:
           credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.1
         with:
-          terraform_version: 1.5.0
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          export_default_credentials: true
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ./terraform
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+      - name: Configure Docker
+        run: gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
 
-      - name: Terraform Refresh
-        run: terraform refresh
-        working-directory: ./terraform
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: ./terraform
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
-  build-and-deploy:
-    needs: setup-infrastructure
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup Google Cloud credentials (Again for Docker Push)
-        uses: google-github-actions/auth@v0.4.0
-        with:
-          credentials_json: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
-      - name: Configure Docker and Build Image
-        run: |
-          docker build -t europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7) .
-          gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
+      - name: Build Docker Image
+        run: docker build -t ${{ env.REGISTRY }}:${{ github.sha }} .
 
       - name: Push Docker Image to GAR
-        run: docker push europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:$(git rev-parse HEAD | cut -c1-7)
+        run: docker push ${{ env.REGISTRY }}:${{ github.sha }}
+
+      - name: Get GKE credentials
+        run: gcloud container clusters get-credentials ${{ env.GKE_CLUSTER_NAME }} --zone ${{ env.GKE_ZONE }} --project ${{ env.PROJECT_ID }}
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: '3.5.2'
+
+      - name: Deploy to GKE using Helm
+        run: |
+          helm upgrade --install ${{ env.IMAGE }} ./helm/${{ env.IMAGE }} --namespace default \
+            --set image.repository=${{ env.REGISTRY }} \
+            --set image.tag=${{ github.sha }}
