@@ -34,32 +34,22 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-  build:
+  build-and-deploy:
     needs: setup-infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build Docker image
-        run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
+      - name: Configure Docker and Build Image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
+          gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
-
-      - name: Push Docker image to GCR
+      - name: Push Docker Image to GCR
         run: docker push gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD)
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Get GKE credentials
-        run: gcloud container clusters get-credentials helloweb3 --region europe-west1 --project ${{ secrets.GCP_PROJECT }}
 
       - name: Deploy to GKE
         run: |
+          gcloud container clusters get-credentials helloweb3 --region europe-west1 --project ${{ secrets.GCP_PROJECT }}
           helm upgrade --install helloweb3 ./helm/helloweb3 --set image=gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD)
