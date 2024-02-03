@@ -9,7 +9,7 @@ resource "google_compute_subnetwork" "subnetwork" {
   ip_cidr_range            = "10.0.0.0/16"
   network                  = google_compute_network.network.self_link
   private_ip_google_access = true
-  region                   = "southamerica-east1"
+  region                   = "europe-west1"
 
   secondary_ip_range {
     range_name    = "bcwresearch-secondaryrange1"

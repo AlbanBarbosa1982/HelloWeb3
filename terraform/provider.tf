@@ -1,6 +1,6 @@
 locals {
   project_id = "dotted-lens-412717"
-  region     = "southamerica-east1"
+  region     = "europe-west1"
   default_labels = {
     managed-by = "terraform"
   }
