@@ -10,6 +10,9 @@ resource "google_container_cluster" "kubernetes-cluster" {
       issue_client_certificate = true
     }
   }
+
+  network    = google_compute_network.network.self_link
+  subnetwork = google_compute_subnetwork.subnetwork.self_link
 }
 
 resource "google_container_node_pool" "app_pool" {
