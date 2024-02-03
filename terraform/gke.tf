@@ -1,5 +1,5 @@
-resource "google_container_cluster" "helloweb3" {
-  name     = "helloweb3"
+resource "google_container_cluster" "kubernetes-cluster" {
+  name     = "kubernetes-cluster"
   location = local.zone
 
   remove_default_node_pool = true
@@ -15,7 +15,7 @@ resource "google_container_cluster" "helloweb3" {
 resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
   location   = local.zone
-  cluster    = google_container_cluster.helloweb3.name
+  cluster    = google_container_cluster.kubernetes-cluster.name
   node_count = 1
 
   node_config {
