@@ -23,7 +23,7 @@ resource "google_container_node_pool" "app_pool" {
   name       = "app-pool"
   location   = local.region
   cluster    = google_container_cluster.helloweb3.name
-  node_count = 2
+  node_count = 1
 
   node_config {
     preemptible  = false
