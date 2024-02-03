@@ -44,7 +44,6 @@ jobs:
       - name: Build Docker image
         run: docker build -t gcr.io/${{ secrets.GCP_PROJECT }}/helloweb3:$(git rev-parse --short HEAD) .
 
-      # No need to set up Google Cloud credentials again for Docker if already authenticated
       - name: Configure Docker for GCR
         run: gcloud auth configure-docker gcr.io,us.gcr.io,eu.gcr.io,asia.gcr.io --quiet
 
@@ -58,7 +57,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # No need to set up Google Cloud credentials again for GKE if already authenticated
       - name: Get GKE credentials
         run: gcloud container clusters get-credentials helloweb3 --region europe-west1 --project ${{ secrets.GCP_PROJECT }}
 
