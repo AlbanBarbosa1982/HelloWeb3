@@ -1,5 +1,6 @@
 locals {
   project_id = "dotted-lens-412717"
+  region     = "europe-west1"
   zone       = "europe-west1-b"
   default_labels = {
     managed-by = "terraform"
@@ -26,10 +27,10 @@ terraform {
 
 provider "google" {
   project = local.project_id
-  region  = local.zone
+  region  = local.region
 }
 
 provider "google-beta" {
   project = local.project_id
-  region  = local.zone
+  region  = local.region
 }
