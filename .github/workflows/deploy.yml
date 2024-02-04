@@ -73,9 +73,10 @@ jobs:
           chmod 700 get_helm.sh
           ./get_helm.sh
 
-      - name: Get GKE credentials
+      - name: Get GKE credentials and set KUBECONFIG
         run: |
           gcloud container clusters get-credentials kubernetes-cluster --zone europe-west1-d --project dotted-lens-412717
+          echo "KUBECONFIG=${HOME}/.kube/config" >> $GITHUB_ENV
 
       - name: Helm Deploy
         run: |
