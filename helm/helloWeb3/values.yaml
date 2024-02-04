@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/YOUR_PROJECT_ID/helloweb3
+  repository: europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 # Updated with the correct image repository
   pullPolicy: IfNotPresent
   tag: "latest"
 
