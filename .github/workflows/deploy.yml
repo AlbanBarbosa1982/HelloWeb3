@@ -73,15 +73,9 @@ jobs:
           chmod 700 get_helm.sh
           ./get_helm.sh
 
-      - name: Install gke-gcloud-auth-plugin
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
-
-      - name: Get GKE credentials and set KUBECONFIG
+      - name: Get GKE credentials
         run: |
           gcloud container clusters get-credentials kubernetes-cluster --zone europe-west1-d --project dotted-lens-412717
-          echo "KUBECONFIG=${HOME}/.kube/config" >> $GITHUB_ENV
 
       - name: Helm Deploy
         run: |
