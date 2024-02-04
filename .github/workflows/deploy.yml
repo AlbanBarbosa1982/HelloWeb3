@@ -40,6 +40,10 @@ jobs:
         with:
           version: '3.5.2'
 
+      - name: Create Kubernetes Secret
+        run: |
+          kubectl create secret generic polygonscan-api-key --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }}
+
       - name: Helm Upgrade and Install Release
         run: |
           helm upgrade --install helloweb3 ./helm/helloWeb3 --namespace default \
