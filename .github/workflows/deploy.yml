@@ -21,8 +21,13 @@ jobs:
 
       - name: Update gcloud and install kubectl
         run: |
-          sudo apt-get update && sudo apt-get install google-cloud-cli
+          sudo apt-get update && sudo apt-get install -y google-cloud-cli
+          gcloud components update
           gcloud components install kubectl
+
+      - name: Install gke-gcloud-auth-plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
@@ -64,7 +69,7 @@ jobs:
 
       - name: Configure Docker and Build Image
         run: |
-          IMAGE_TAG=32f601f
+          IMAGE_TAG=$(git rev-parse HEAD | cut -c1-7)
           docker build -t europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:$IMAGE_TAG .
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
           gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
@@ -77,7 +82,7 @@ jobs:
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
           chmod 700 get_helm.sh
           ./get_helm.sh
-
+      
       - name: Helm Lint
         run: helm lint ./helm/helloWeb3
 
