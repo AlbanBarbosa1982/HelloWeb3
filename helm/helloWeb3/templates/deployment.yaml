@@ -50,7 +50,7 @@ spec:
             - name: POLYGONSCAN_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: polygonscan-api-key-secret
+                  name: polygonscan-api-key
                   key: POLYGONSCAN_API_KEY
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
