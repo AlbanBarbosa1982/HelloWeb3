@@ -52,3 +52,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  - name: POLYGONSCAN_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: polygonscan-api-key-secret
+        key: POLYGONSCAN_API_KEY

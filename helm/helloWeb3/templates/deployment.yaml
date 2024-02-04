@@ -3,39 +3,37 @@ kind: Deployment
 metadata:
   name: {{ include "helloWeb3.fullname" . }}
   labels:
-{{ include "helloWeb3.labels" . | nindent 4 }}
+    {{- include "helloWeb3.labels" . | nindent 4 }}
 spec:
-{{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-{{- end }}
+  replicas: {{- if .Values.autoscaling.enabled }}{{ .Values.autoscaling.minReplicas }}{{- else }}{{ .Values.replicaCount }}{{- end }}
   selector:
     matchLabels:
-{{- include "helloWeb3.selectorLabels" . | nindent 6 }}
+      {{- include "helloWeb3.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-{{- with .Values.podAnnotations }}
       annotations:
-{{- toYaml . | nindent 8 }}
-{{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
-{{- include "helloWeb3.selectorLabels" . | nindent 8 }}
+        {{- include "helloWeb3.selectorLabels" . | nindent 8 }}
     spec:
-{{- with .Values.imagePullSecrets }}
+      {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
-{{- toYaml . | nindent 8 }}
-{{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       serviceAccountName: {{ include "helloWeb3.serviceAccountName" . }}
       securityContext:
-{{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name | lower }}
           securityContext:
-{{- toYaml .Values.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: 3000 
+              containerPort: 3000
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -45,17 +43,23 @@ spec:
             httpGet:
               path: /
               port: http
+          env:
+            - name: POLYGONSCAN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: polygonscan-api-key-secret
+                  key: POLYGONSCAN_API_KEY
           resources:
-{{- toYaml .Values.resources | nindent 12 }}
-{{- with .Values.nodeSelector }}
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{- toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{- toYaml . | nindent 8 }}
-{{- end }}
-{{- with .Values.tolerations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-{{- toYaml . | nindent 8 }}
-{{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
