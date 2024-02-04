@@ -73,10 +73,6 @@ jobs:
           chmod 700 get_helm.sh
           ./get_helm.sh
 
-      - name: Setup additional gcloud components (Helm, Beta, gke-gcloud-auth-plugin)
-        run: |
-          gcloud components install beta gke-gcloud-auth-plugin --quiet
-
       - name: Get GKE credentials
         run: |
           gcloud container clusters get-credentials kubernetes-cluster --zone europe-west1-d --project dotted-lens-412717
