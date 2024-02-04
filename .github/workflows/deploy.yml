@@ -1,4 +1,4 @@
-name: 'Build, Deploy to GCP with Terraform'
+name: 'Build, Deploy to GCP with Terraform and Helm'
 
 on:
   push:
@@ -61,3 +61,13 @@ jobs:
 
       - name: Push Docker Image to GAR
         run: docker push europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3:${{ env.IMAGE_TAG }}
+
+      - name: Install Helm
+        run: |
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+
+      - name: Helm Deploy
+        run: |
+          helm upgrade --install helloWeb3 ./helm/helloWeb3 --set image.repository=europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 --set image.tag=${{ env.IMAGE_TAG }}
