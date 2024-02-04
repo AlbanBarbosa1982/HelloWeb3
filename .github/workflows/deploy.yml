@@ -28,12 +28,6 @@ jobs:
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
-      - name: Terraform Import
-        run: terraform import <address> <id>
-        working-directory: ./terraform
-        env:
-          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-
       - name: Terraform Refresh
         run: terraform refresh
         working-directory: ./terraform
