@@ -75,7 +75,7 @@ jobs:
 
       - name: Install gcloud beta components and gke-gcloud-auth-plugin
         run: |
-          gcloud components install beta gke-gcloud-auth-plugin --quiet
+          sudo apt-get install google-cloud-sdk google-cloud-sdk-gke-gcloud-auth-plugin --quiet
 
       - name: Get GKE credentials
         run: |
