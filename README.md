@@ -1,63 +1,80 @@
-# SRE/Devops Challenge
+# Build, Deploy to GCP with Terraform and Helm
 
-## Overview
-This challenge involves deploying a Node.js application that monitors the Polygon blockchain's block height on Google Kubernetes Engine (GKE) using Terraform and CI/CD. The task will assess your skills in cloud infrastructure management, container orchestration, application deployment, monitoring, and automation.
+This repository contains a GitHub Actions workflow that automates the process of building a Docker image, pushing it to Google Artifact Registry (GAR), and deploying it to a Google Kubernetes Engine (GKE) cluster using Helm and Terraform.
 
-## Prerequisites
-- API Key from polygonscan.com (it is free)  https://polygonscan.com/register
-- Get Access to Google Cloud Platform (GCP) and the claim $300 free credits
-    https://cloud.google.com/free/docs/gcp-free-tier/#free-trial.
-- Familiarity with Terraform, Kubernetes, Docker, Helm, Prometheus, Grafana, and GitHub Actions.
+## Workflow Overview
 
-## Objectives
-- Provision a GKE cluster in a dedicated VPC using Terraform.
-- Containerize and deploy a provided Node.js application to GKE.
-- Set up Prometheus and Grafana in the cluster for monitoring.
-- Ensure the application and Grafana dashboard are publicly accessible.
+The workflow is triggered on every push to the `main` branch.
 
-## Task Details
+### Setup Infrastructure
 
-### 1. GCP Project Setup
+The first job, `setup-infrastructure`, prepares the environment for the deployment. It includes the following steps:
 
+- **Checkout code**: This step checks out the repository code.
+- **Set up Cloud SDK**: This step sets up the Google Cloud SDK with the necessary credentials.
+- **Configure Docker for Artifact Registry**: This step configures Docker to use the Artifact Registry.
+- **Setup Terraform**: This step sets up Terraform with the specified version.
+- **Terraform Init**: This step initializes Terraform in the specified directory.
+- **Terraform Refresh**: This step updates the Terraform state file to match the real resources.
+- **Terraform Apply**: This step applies the Terraform configuration, creating or updating the infrastructure as needed.
 
-### 2. Terraform Setup for GKE
-- Use existing Terraform modules or create a minimal setup for provisioning a VPC and GKE cluster.  !!!!!!
-- Optionally, set up an IAM role for a read-only Kubernetes user.
+### Build and Deploy
 
-### 3. Node.js Application Setup
-- Fork or clone the [BCWResearch/HelloWeb3](https://github.com/BCWResearch/HelloWeb3) repository.
-- Register for an API key from [PolygonScan](https://polygonscan.com/).
-- Create a Dockerfile for the application.
-- Set up a CI/CD pipeline with GitHub Actions for building and pushing the Docker image.
+The second job, `build-and-deploy`, depends on the successful completion of `setup-infrastructure`. It includes the following steps:
 
-### 4. Helm Chart and Deployment
-- Develop a Helm chart for the application.
-- Deploy the application to GKE using CI/CD.
-- Ensure public accessibility and metrics exposure on port 3000.
+- **Checkout**: This step checks out the repository code.
+- **Setup Google Cloud credentials (Again for Docker Push)**: This step sets up the Google Cloud credentials again for Docker push.
+- **Configure Docker and Build Image**: This step builds the Docker image and tags it with the specified image tag.
+- **Push Docker Image to GAR**: This step pushes the Docker image to the Google Artifact Registry.
+- **Install Helm**: This step installs Helm, a package manager for Kubernetes.
+- **Install gke-gcloud-auth-plugin**: This step installs the `gke-gcloud-auth-plugin` which is required for `kubectl` to authenticate with GKE.
+- **Get GKE credentials and set KUBECONFIG**: This step retrieves the credentials for the GKE cluster and sets the `KUBECONFIG` environment variable.
+- **Helm Deploy**: This step deploys the application to the GKE cluster using Helm.
 
-### 5. Prometheus and Grafana Deployment
-- Deploy Prometheus in the GKE cluster.
-- Deploy Grafana with external access (IP or DNS) and SSL.
-- Configure Grafana for metrics visualization.
+## Train of Thought
 
-## Deliverables
-- A GitHub repository with Dockerfile, Helm chart, CI/CD configuration, and Terraform code.
-- Public URLs for the application and Grafana dashboard.
-- Documentation on the setup process and access details.
+(You can fill this section with your thoughts on the workflow.)
 
-## Evaluation Criteria
-- Application deployment functionality.
-- Metrics integration in Grafana.
-- Best practices in Terraform, Kubernetes, monitoring, and CI/CD.
-- Documentation quality.
+## Improvements
 
-## Additional Resources
-- Terraform, GitHub CI, and Helm references are provided in this repository to illustrate the basic structure. Feel free to modify these as needed.
+(You can fill this section with potential improvements for the workflow.)
+# Build, Deploy to GCP with Terraform and Helm
 
-## Submission Guidelines
-- Ensure all deliverables are committed to your repository.
-- Provide clear documentation in the repository.
-- Submit the repository URL upon completion.
+This repository contains a GitHub Actions workflow that automates the process of building a Docker image, pushing it to Google Artifact Registry (GAR), and deploying it to a Google Kubernetes Engine (GKE) cluster using Helm and Terraform.
 
+## Workflow Overview
 
-slowly
+The workflow is triggered on every push to the `main` branch.
+
+### Setup Infrastructure
+
+The first job, `setup-infrastructure`, prepares the environment for the deployment. It includes the following steps:
+
+- **Checkout code**: This step checks out the repository code.
+- **Set up Cloud SDK**: This step sets up the Google Cloud SDK with the necessary credentials.
+- **Configure Docker for Artifact Registry**: This step configures Docker to use the Artifact Registry.
+- **Setup Terraform**: This step sets up Terraform with the specified version.
+- **Terraform Init**: This step initializes Terraform in the specified directory.
+- **Terraform Refresh**: This step updates the Terraform state file to match the real resources.
+- **Terraform Apply**: This step applies the Terraform configuration, creating or updating the infrastructure as needed.
+
+### Build and Deploy
+
+The second job, `build-and-deploy`, depends on the successful completion of `setup-infrastructure`. It includes the following steps:
+
+- **Checkout**: This step checks out the repository code.
+- **Setup Google Cloud credentials (Again for Docker Push)**: This step sets up the Google Cloud credentials again for Docker push.
+- **Configure Docker and Build Image**: This step builds the Docker image and tags it with the specified image tag.
+- **Push Docker Image to GAR**: This step pushes the Docker image to the Google Artifact Registry.
+- **Install Helm**: This step installs Helm, a package manager for Kubernetes.
+- **Install gke-gcloud-auth-plugin**: This step installs the `gke-gcloud-auth-plugin` which is required for `kubectl` to authenticate with GKE.
+- **Get GKE credentials and set KUBECONFIG**: This step retrieves the credentials for the GKE cluster and sets the `KUBECONFIG` environment variable.
+- **Helm Deploy**: This step deploys the application to the GKE cluster using Helm.
+
+## Train of Thought
+
+(You can fill this section with your thoughts on the workflow.)
+
+## Improvements
+
+(You can fill this section with potential improvements for the workflow.)
