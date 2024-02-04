@@ -42,7 +42,9 @@ jobs:
 
       - name: Create Kubernetes Secret
         run: |
-          kubectl create secret generic polygonscan-api-key --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }}
+          if ! kubectl get secret polygonscan-api-key; then
+            kubectl create secret generic polygonscan-api-key --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }}
+          fi
 
       - name: Helm Upgrade and Install Release
         run: |
