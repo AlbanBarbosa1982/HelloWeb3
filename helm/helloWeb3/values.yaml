@@ -1,7 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "helloWeb3.fullname" . }}
+  labels:
+    {{- include "helloWeb3.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "helloWeb3.selectorLabels" . | nindent 4 }}
+
 replicaCount: 1
 
 image:
-  repository: europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 # Updated with the correct image repository
+  repository: europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3
   pullPolicy: IfNotPresent
   tag: "latest"
 
@@ -25,7 +41,7 @@ securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 80  
+  port: 3000
   targetPort: 3000
 
 ingress:
