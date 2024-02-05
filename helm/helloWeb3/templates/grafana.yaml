@@ -23,7 +23,7 @@ spec:
   secretName: grafana-tls-secret
   issuerRef:
     name: letsencrypt-prod
-  commonName: <your-loadbalancer-ip>
+  commonName: 35.241.149.229
 
 ---
 apiVersion: apps/v1
