@@ -17,18 +17,18 @@ serviceAccount:
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: "8080"  # Adjusted for Prometheus metrics
+  prometheus.io/port: "8080" 
 
 podSecurityContext: {}
 securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 3000  # Application port
+  port: 3000  
   targetPort: 3000
 
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations: {}
   hosts:
