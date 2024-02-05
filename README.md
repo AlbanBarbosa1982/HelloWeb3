@@ -49,6 +49,53 @@ The second job, `build-and-deploy`, depends on the successful completion of `set
 - **Get GKE credentials and set KUBECONFIG**: This step retrieves the credentials for the GKE cluster and sets the `KUBECONFIG` environment variable.
 - **Helm Deploy**: This step deploys the application to the GKE cluster using Helm.
 
+***
+
+## Endpoints
+
+- Application: [http://35.195.160.119:3000/](http://35.195.160.119:3000/)
+- Prometheus Metrics: [http://35.195.160.119:3000/metrics](http://35.195.160.119:3000/metrics)
+- Prometheus: [http://34.76.172.49:9090/graph](http://34.76.172.49:9090/graph)
+- Grafana: [https://35.241.149.229:3000/](https://35.241.149.229:3000/)
+
+
+
+## Train of Thought
+
+A lot off work but also pretty cool to do. I started with a bucket for the terraform state by hand and via ci/cd got my infra up and running. Some roles I first added by hand in servcice account and later made via terrafom. I got the two application endpoints up and running just as Prometheus. After too much time this weekend I could not get tls for grafana working so I could also not configure Grafana in the end due to time. Mainly been struggeling with TLS lets encrypt the last moments. I would worked on it further but now busy with normal work so no more time anymore.
+
+
+## Improvements
+
+- TLS certificates everywhere
+- helm deployment split over multiple files. Now Grafana contains to much
+- ingress instead of the loadbalancers
+
+### Setup Infrastructure
+
+The first job, `setup-infrastructure`, prepares the environment for the deployment. It includes the following steps:
+
+- **Checkout code**: This step checks out the repository code.
+- **Set up Cloud SDK**: This step sets up the Google Cloud SDK with the necessary credentials.
+- **Configure Docker for Artifact Registry**: This step configures Docker to use the Artifact Registry.
+- **Setup Terraform**: This step sets up Terraform with the specified version.
+- **Terraform Init**: This step initializes Terraform in the specified directory.
+- **Terraform Refresh**: This step updates the Terraform state file to match the real resources.
+- **Terraform Apply**: This step applies the Terraform configuration, creating or updating the infrastructure as needed.
+
+### Build and Deploy
+
+The second job, `build-and-deploy`, depends on the successful completion of `setup-infrastructure`. It includes the following steps:
+
+- **Checkout**: This step checks out the repository code.
+- **Setup Google Cloud credentials (Again for Docker Push)**: This step sets up the Google Cloud credentials again for Docker push.
+- **Configure Docker and Build Image**: This step builds the Docker image and tags it with the specified image tag.
+- **Push Docker Image to GAR**: This step pushes the Docker image to the Google Artifact Registry.
+- **Install Helm**: This step installs Helm, a package manager for Kubernetes.
+- **Install gke-gcloud-auth-plugin**: This step installs the `gke-gcloud-auth-plugin` which is required for `kubectl` to authenticate with GKE.
+- **Get GKE credentials and set KUBECONFIG**: This step retrieves the credentials for the GKE cluster and sets the `KUBECONFIG` environment variable.
+- **Helm Deploy**: This step deploys the application to the GKE cluster using Helm.
+
 ## Train of Thought
 
 (You can fill this section with your thoughts on the workflow.)
@@ -88,11 +135,3 @@ The second job, `build-and-deploy`, depends on the successful completion of `set
 - **Install gke-gcloud-auth-plugin**: This step installs the `gke-gcloud-auth-plugin` which is required for `kubectl` to authenticate with GKE.
 - **Get GKE credentials and set KUBECONFIG**: This step retrieves the credentials for the GKE cluster and sets the `KUBECONFIG` environment variable.
 - **Helm Deploy**: This step deploys the application to the GKE cluster using Helm.
-
-## Train of Thought
-
-(You can fill this section with your thoughts on the workflow.)
-
-## Improvements
-
-(You can fill this section with potential improvements for the workflow.)
