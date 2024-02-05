@@ -31,7 +31,7 @@ function updateMetrics() {
         const blockNumberHex = response.data.result;
         const blockNumber = parseInt(blockNumberHex, 16);
         item.gauge.set(blockNumber);
-        console.log("Fetched latest blocknumber");
+        console.log("Fetched latest block number");
       })
       .catch((error) => {
         console.error(`Error fetching data from ${item.url}:`, error);
@@ -54,8 +54,10 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(8080, () => {
-  console.log("Server is running on http://localhost:8080");
+const PORT = process.env.PORT || 3000; // Use port 3000 by default, but you can specify it via the PORT environment variable
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
   updateMetrics();
-  console.log("Metrics are available on http://localhost:8080/metrics");
+  console.log(`Metrics are available on http://0.0.0.0:${PORT}/metrics`);
 });
