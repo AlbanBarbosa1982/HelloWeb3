@@ -40,11 +40,23 @@ jobs:
         with:
           version: '3.5.2'
 
-      - name: Create Kubernetes Secret
+      - name: Create Kubernetes Secret for Polygonscan API Key
         run: |
-          if ! kubectl get secret polygonscan-api-key; then
-            kubectl create secret generic polygonscan-api-key --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }}
-          fi
+          kubectl create secret generic polygonscan-api-key \
+            --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }} \
+            --namespace default
+
+      - name: Create Kubernetes Secret for PostgreSQL Password
+        run: |
+          kubectl create secret generic postgres-secret \
+            --from-literal=postgres-password=${{ secrets.POSTGRESSECRET }} \
+            --namespace default
+
+      - name: Create Kubernetes Secret for Grafana Admin Password
+        run: |
+          kubectl create secret generic grafana-secret \
+            --from-literal=GFSECURITYADMINPASSWORD=${{ secrets.GFSECURITYADMINPASSWORD }} \
+            --namespace default
 
       - name: Helm Upgrade and Install Release
         run: |
