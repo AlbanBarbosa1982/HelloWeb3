@@ -17,15 +17,14 @@ serviceAccount:
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: "3000"
+  prometheus.io/port: "8080"  # Adjusted for Prometheus metrics
 
 podSecurityContext: {}
-
 securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 3000
+  port: 3000  # Application port
   targetPort: 3000
 
 ingress:
@@ -48,9 +47,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
 
 env:
