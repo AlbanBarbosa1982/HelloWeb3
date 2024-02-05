@@ -20,8 +20,7 @@ jobs:
           export_default_credentials: true
 
       - name: Install gcloud beta components and gke-gcloud-auth-plugin
-        run: |
-          gcloud components install beta gke-gcloud-auth-plugin --quiet
+        run: gcloud components install beta gke-gcloud-auth-plugin --quiet
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker europe-west4-docker.pkg.dev --quiet
@@ -40,23 +39,35 @@ jobs:
         with:
           version: '3.5.2'
 
-      - name: Create Kubernetes Secret for Polygonscan API Key
+      - name: Check and Create Polygonscan API Key Secret
         run: |
-          kubectl create secret generic polygonscan-api-key \
-            --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }} \
-            --namespace default
+          if ! kubectl get secret polygonscan-api-key --namespace default; then
+            kubectl create secret generic polygonscan-api-key \
+              --from-literal=polygonscan-api-key=${{ secrets.POLYGONSCAN_API_KEY }} \
+              --namespace default
+          else
+            echo "Secret 'polygonscan-api-key' already exists, skipping creation."
+          fi
 
-      - name: Create Kubernetes Secret for PostgreSQL Password
+      - name: Check and Create PostgreSQL Password Secret
         run: |
-          kubectl create secret generic postgres-secret \
-            --from-literal=postgres-password=${{ secrets.POSTGRESSECRET }} \
-            --namespace default
+          if ! kubectl get secret postgres-secret --namespace default; then
+            kubectl create secret generic postgres-secret \
+              --from-literal=postgres-password=${{ secrets.POSTGRESSECRET }} \
+              --namespace default
+          else
+            echo "Secret 'postgres-secret' already exists, skipping creation."
+          fi
 
-      - name: Create Kubernetes Secret for Grafana Admin Password
+      - name: Check and Create Grafana Admin Password Secret
         run: |
-          kubectl create secret generic grafana-secret \
-            --from-literal=GFSECURITYADMINPASSWORD=${{ secrets.GFSECURITYADMINPASSWORD }} \
-            --namespace default
+          if ! kubectl get secret grafana-secret --namespace default; then
+            kubectl create secret generic grafana-secret \
+              --from-literal=GFSECURITYADMINPASSWORD=${{ secrets.GFSECURITYADMINPASSWORD }} \
+              --namespace default
+          else
+            echo "Secret 'grafana-secret' already exists, skipping creation."
+          fi
 
       - name: Helm Upgrade and Install Release
         run: |
