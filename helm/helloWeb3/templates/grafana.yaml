@@ -26,6 +26,12 @@ spec:
                 secretKeyRef:
                   name: grafana-secret
                   key: GFSECURITYADMINPASSWORD
+            - name: GF_SERVER_PROTOCOL
+              value: https
+            - name: GF_SERVER_CERT_FILE
+              value: /etc/grafana/ssl/grafana.crt
+            - name: GF_SERVER_CERT_KEY
+              value: /etc/grafana/ssl/grafana.key
 ---
 apiVersion: v1
 kind: Service
@@ -35,8 +41,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: http
-      port: 3000
+    - name: https
+      port: 443
       targetPort: 3000
       protocol: TCP
   selector:
