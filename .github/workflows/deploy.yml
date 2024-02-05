@@ -47,7 +47,8 @@ jobs:
           helm upgrade --install cert-manager jetstack/cert-manager \
             --namespace cert-manager \
             --version v1.6.1 \
-            --set installCRDs=true
+            --set installCRDs=true \
+            --wait
 
       - name: Check and Create Polygonscan API Key Secret
         run: |
@@ -83,4 +84,5 @@ jobs:
         run: |
           helm upgrade --install helloweb3 ./helm/helloWeb3 --namespace default \
             --set image.repository=europe-west4-docker.pkg.dev/dotted-lens-412717/prachtig/helloweb3 \
-            --set image.tag=${{ github.sha }}
+            --set image.tag=${{ github.sha }} \
+            --wait
