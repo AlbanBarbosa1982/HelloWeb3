@@ -1,7 +1,25 @@
-# Build, Deploy to GCP with Terraform and Helm
+# Automated Build, Push, and Deployment to GKE with GitHub Actions
 
-This repository contains a GitHub Actions workflow that automates the process of building a Docker image, pushing it to Google Artifact Registry (GAR), and deploying it to a Google Kubernetes Engine (GKE) cluster using Helm and Terraform.
+This repository orchestrates an automated process for building a Docker image, pushing it to Google Artifact Registry (GAR), and deploying it to a Google Kubernetes Engine (GKE) cluster utilizing Helm and Terraform, streamlined through GitHub Actions.
 
+## Repository Structure Overview
+
+The repository is organized as follows, providing a clear overview of its key components:
+
+```
+├── Dockerfile              # Defines the Docker image for the application.
+├── README.md               # Documentation of the repository and deployment process.
+├── app.js                  # The main application file for a Node.js application.
+├── helm                    # Contains Helm charts for deploying the application to Kubernetes.
+│   └── helloWeb3           # A Helm chart specifically for this application.
+├── package-lock.json       # Automatically generated file for exact versions of npm dependencies.
+├── package.json            # Manages project dependencies and configurations.
+├── terraform               # Terraform configurations for the infrastructure setup.
+│   ├── gke.tf              # Configuration for the Google Kubernetes Engine cluster.
+│   ├── provider.tf         # Terraform provider configuration for Google Cloud.
+│   ├── serviceaccount.tf   # Configuration for the service account.
+│   └── vpc.tf              # Configuration for the Virtual Private Cloud networking.
+```
 ## Workflow Overview
 
 The workflow is triggered on every push to the `main` branch.
