@@ -39,6 +39,10 @@ jobs:
         with:
           version: '3.5.2'
 
+      - name: Install Cert Manager
+        run: |
+          kubectl apply --namespace default -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
+
       - name: Check and Create Polygonscan API Key Secret
         run: |
           if ! kubectl get secret polygonscan-api-key --namespace default; then
