@@ -41,7 +41,11 @@ jobs:
 
       - name: Install Cert Manager
         run: |
-          kubectl create namespace cert-manager
+          if ! kubectl get namespace cert-manager; then
+            kubectl create namespace cert-manager
+          else
+            echo "Namespace 'cert-manager' already exists, skipping creation."
+          fi
           kubectl apply --namespace cert-manager -f https://github.com/jetstack/cert-manager/releases/download/v1.6.1/cert-manager.yaml
 
       - name: Check and Create Polygonscan API Key Secret
