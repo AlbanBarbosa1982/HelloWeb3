@@ -17,14 +17,14 @@ serviceAccount:
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/path: "/metrics"
-  prometheus.io/port: "8080" 
+  prometheus.io/port: "8080"
 
 podSecurityContext: {}
 securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 3000  
+  port: 3000
   targetPort: 3000
 
 ingress:
@@ -56,3 +56,61 @@ env:
       secretKeyRef:
         name: polygonscan-api-key
         key: POLYGONSCAN_API_KEY
+
+# Grafana deployment
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30001
+  ingress:
+    enabled: false
+  persistence:
+    enabled: false
+  sidecar:
+    datasources:
+      enabled: true
+      label: grafana_datasource
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+
+# Prometheus deployment
+prometheus:
+  enabled: true
+  server:
+    service:
+      type: NodePort
+      port: 80
+      nodePort: 30002
+    ingress:
+      enabled: false
+    persistence:
+      enabled: false
+    configMapOverrideName: prometheus-config
+    extraConfigmapMounts:
+      - name: prometheus-config
+        mountPath: /etc/prometheus/config
+        configMap: prometheus-config
+        readOnly: true
+    extraScrapeConfigs: |
+      - job_name: 'node'
+        static_configs:
+          - targets: ['localhost:9100']
+  alertmanager:
+    enabled: false
